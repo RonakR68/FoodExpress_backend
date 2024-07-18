@@ -29,7 +29,7 @@ const loginUser = asyncHandler(async (req, res) => {
 // @access  Public
 const registerUser = asyncHandler(async (req, res) => {
   const { name, email, password } = req.body;
-
+  console.log('controller: '+name);
   const userExists = await User.findOne({ email });
 
   if (userExists) {
@@ -66,6 +66,22 @@ const logoutUser = (req, res) => {
     expires: new Date(0),
   });
   res.status(200).json({ message: 'Logged out successfully' });
+};
+
+// @desc    get logged in user
+// @route   POST /api/auth/user
+// @access  Public
+export const getUser = async (req, res) => {
+  const user = await User.findById(req.user._id);
+  if (user) {
+    res.json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+    });
+  } else {
+    res.status(404).json({ message: 'User not found' });
+  }
 };
 
 export {

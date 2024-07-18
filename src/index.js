@@ -6,6 +6,7 @@ import cookieParser from "cookie-parser";
 import mongoose from "mongoose";
 import authRoutes from "./routes/authRoutes.js";
 import myUserRoute from "./routes/myUserRoute.js";
+import statusRoutes from './routes/statusRoutes.js';
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 
 const port = process.env.PORT || 7000;
@@ -19,7 +20,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(cors({
-    origin: ["http://localhost:5173", "http://localhost:7000"],
+    origin: ["http://localhost:5173"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
 }));
@@ -27,6 +28,7 @@ app.use(cors({
 app.get("/status", async (req, res) => {
   res.send({ message: "status OK!" });
 });
+
 
 app.use('/api/auth', authRoutes);
 //forward request to myUserRoute
