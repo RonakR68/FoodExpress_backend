@@ -9,6 +9,7 @@ import myUserRoute from "./routes/myUserRoute.js";
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 import { v2 as cloudinary } from "cloudinary";
 import myRestaurantRoute from "./routes/MyRestaurantRoute.js";
+import restaurantRoute from "./routes/RestaurantRoute.js";
 
 const port = process.env.PORT || 7000;
 mongoose
@@ -38,11 +39,17 @@ app.get("/status", async (req, res) => {
   res.send({ message: "status OK!" });
 });
 
-
+//auth route
 app.use('/api/auth', authRoutes);
+
 //forward request to myUserRoute
 app.use("/api/my/user", myUserRoute);
+
+//my restaurant route
 app.use("/api/my/restaurant", myRestaurantRoute);
+
+//restaurant route
+app.use("/api/restaurant", restaurantRoute);
 
 app.use(notFound);
 app.use(errorHandler);
