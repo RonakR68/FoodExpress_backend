@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.get('/status', protect, (req, res) => {
     res.json({ isAuthenticated: true, user: req.user });
-    console.log(res);
+    //console.log(res);
 });
 
 export default router;

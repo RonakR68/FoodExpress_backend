@@ -6,6 +6,7 @@ const getCurrentUser = async (req, res) => {
         if (!currentUser) {
             return res.status(404).json({ message: "User not found" });
         }
+        //console.log(currentUser);
         res.json(currentUser);
     } catch (error) {
         console.error(error);
