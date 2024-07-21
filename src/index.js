@@ -13,6 +13,8 @@ import restaurantRoute from "./routes/RestaurantRoute.js";
 import orderRoute from "./routes/OrderRoute.js";
 
 const port = process.env.PORT || 7000;
+const client_base_url = process.env.CLIENT_BASE_URL;
+
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => console.log("Connected to mongodb"));
@@ -25,7 +27,7 @@ cloudinary.config({
 
 const app = express();
 const corsOptions = {
-  origin: 'http://localhost:5173',
+  origin: `${client_base_url}`,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   //allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
