@@ -91,7 +91,7 @@ const getMyRestaurantOrders = async (req, res) => {
         //console.log(req.user._id);
         const restaurant = await Restaurant.findOne({ user: req.user._id });
         if (!restaurant) {
-            console.log("get order: no restaurant found");
+            //console.log("get order: no restaurant found");
             return res.status(404).json({ message: "restaurant not found" });
         }
 
@@ -110,7 +110,7 @@ const updateOrderStatus = async (req, res) => {
     try {
         //console.log('update order status');
         //console.log(req.params);
-        console.log(req.body);
+        //console.log(req.body);
         const { orderId } = req.params;
         const { status } = req.body;
 
@@ -122,10 +122,10 @@ const updateOrderStatus = async (req, res) => {
 
         const restaurant = await Restaurant.findById(order.restaurant);
         //console.log(restaurant);
-        console.log('Restaurant user ID:', restaurant.user._id.toString());
-        console.log('Request user ID:', req.user._id.toString());
+        //console.log('Restaurant user ID:', restaurant.user._id.toString());
+        //console.log('Request user ID:', req.user._id.toString());
         if (!restaurant.user._id.equals(req.user._id)) {
-            console.log('user id not match');
+            //console.log('user id not match');
             return res.status(401).send();
         }
 

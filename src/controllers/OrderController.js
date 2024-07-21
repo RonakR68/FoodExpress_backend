@@ -47,8 +47,8 @@ const createOrder = async (req, res) => {
 };
 
 const calculateTotalAmount = (cartItems, menuItems, deliveryPrice) => {
-    console.log(cartItems);
-    console.log(menuItems);
+    //console.log(cartItems);
+    //console.log(menuItems);
     const itemsTotal = cartItems.reduce((total, cartItem) => {
         const menuItem = menuItems.find(
             (item) => item._id.toString() === cartItem.menuItemId.toString()
