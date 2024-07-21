@@ -10,6 +10,7 @@ import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 import { v2 as cloudinary } from "cloudinary";
 import myRestaurantRoute from "./routes/MyRestaurantRoute.js";
 import restaurantRoute from "./routes/RestaurantRoute.js";
+import orderRoute from "./routes/OrderRoute.js";
 
 const port = process.env.PORT || 7000;
 mongoose
@@ -23,16 +24,19 @@ cloudinary.config({
 });
 
 const app = express();
-app.use(cors({
-  origin: ["http://localhost:5173"],
-  methods: ["GET", "POST", "PUT", "DELETE"],
+const corsOptions = {
+  origin: 'http://localhost:5173',
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  //allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
-}));
-//app.options('/api/my/restaurant', cors()); // Enable pre-flight request for this route
+};
 
+app.use(cors(corsOptions));
+app.use(cookieParser());
+app.options('*', cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
+
 
 
 app.get("/status", async (req, res) => {
@@ -50,6 +54,9 @@ app.use("/api/my/restaurant", myRestaurantRoute);
 
 //restaurant route
 app.use("/api/restaurant", restaurantRoute);
+
+//order route
+app.use("/api/order", orderRoute);
 
 app.use(notFound);
 app.use(errorHandler);

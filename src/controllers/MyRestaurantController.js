@@ -1,6 +1,6 @@
 import Restaurant from "../models/restaurant.js";
 import cloudinary from "cloudinary";
-import mongoose from "mongoose";
+import Order from "../models/order.js";
 
 // Get restaurant details
 const getMyRestaurant = async (req, res) => {
@@ -9,7 +9,7 @@ const getMyRestaurant = async (req, res) => {
         //console.log(req.user);
         const restaurant = await Restaurant.findOne({ user: req.user._id });
         if (!restaurant) {
-            console.log("no restaurant");
+            //console.log("no restaurant");
             return res.status(404).json({ message: "No Restaurant found!" });
         }
         res.json(restaurant);
@@ -29,7 +29,7 @@ const createMyRestaurant = async (req, res) => {
             return res.status(405).json({ message: "User ID is missing in the request" });
         }
 
-        const existingRestaurant = await Restaurant.findOne({ user: req.userId });
+        const existingRestaurant = await Restaurant.findOne({ user: req.user._id });
 
         if (existingRestaurant) {
             return res
@@ -85,6 +85,60 @@ const updateMyRestaurant = async (req, res) => {
     }
 };
 
+const getMyRestaurantOrders = async (req, res) => {
+    try {
+        //console.log("get my restaurant order");
+        //console.log(req.user._id);
+        const restaurant = await Restaurant.findOne({ user: req.user._id });
+        if (!restaurant) {
+            console.log("get order: no restaurant found");
+            return res.status(404).json({ message: "restaurant not found" });
+        }
+
+        const orders = await Order.find({ restaurant: restaurant._id })
+            .populate("restaurant")
+            .populate("user");
+
+        res.json(orders);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "something went wrong" });
+    }
+};
+
+const updateOrderStatus = async (req, res) => {
+    try {
+        //console.log('update order status');
+        //console.log(req.params);
+        console.log(req.body);
+        const { orderId } = req.params;
+        const { status } = req.body;
+
+        const order = await Order.findById(orderId);
+        //console.log(order);
+        if (!order) {
+            return res.status(404).json({ message: "order not found" });
+        }
+
+        const restaurant = await Restaurant.findById(order.restaurant);
+        //console.log(restaurant);
+        console.log('Restaurant user ID:', restaurant.user._id.toString());
+        console.log('Request user ID:', req.user._id.toString());
+        if (!restaurant.user._id.equals(req.user._id)) {
+            console.log('user id not match');
+            return res.status(401).send();
+        }
+
+        order.status = status;
+        await order.save();
+
+        res.status(200).json(order);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "unable to update order status" });
+    }
+};
+
 const uploadImage = async (file) => {
     const image = file; // Image file from multer memory storage
     const base64Image = Buffer.from(image.buffer).toString("base64"); // Get base64 encoded string of image
@@ -99,4 +153,6 @@ export default {
     getMyRestaurant,
     createMyRestaurant,
     updateMyRestaurant,
+    updateOrderStatus,
+    getMyRestaurantOrders,
 };
