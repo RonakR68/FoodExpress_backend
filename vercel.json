@@ -8,7 +8,7 @@
     ],
     "routes": [
         {
-            "src": "https://food-express-backend-blush.vercel.app",
+            "src": "https://food-express-backend-blush.vercel.app/(.*)",
             "dest": "./src/index.js",
             "methods": [
                 "GET",
