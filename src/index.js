@@ -11,6 +11,7 @@ import { v2 as cloudinary } from "cloudinary";
 import myRestaurantRoute from "./routes/MyRestaurantRoute.js";
 import restaurantRoute from "./routes/RestaurantRoute.js";
 import orderRoute from "./routes/OrderRoute.js";
+import { allowCors } from "./utils/allowCors.js";
 
 const port = process.env.PORT || 7000;
 const client_base_url = process.env.CLIENT_BASE_URL;
@@ -63,6 +64,9 @@ app.use("/api/order", orderRoute);
 app.use(notFound);
 app.use(errorHandler);
 
-app.listen(port, () => {
-  console.log(`server started on localhost: ${port}`);
+const server = app.listen(port, () => {
+  console.log(`Server started on localhost: ${port}`);
 });
+
+// Export the server with CORS enabled
+export { server};
