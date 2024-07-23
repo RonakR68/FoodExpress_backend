@@ -11,7 +11,7 @@ import { v2 as cloudinary } from "cloudinary";
 import myRestaurantRoute from "./routes/MyRestaurantRoute.js";
 import restaurantRoute from "./routes/RestaurantRoute.js";
 import orderRoute from "./routes/OrderRoute.js";
-
+import allowCors from './utils/allowCors.js';
 
 const port = process.env.PORT || 7000;
 const client_base_url = process.env.CLIENT_BASE_URL;
@@ -30,45 +30,35 @@ const app = express();
 const corsOptions = {
   origin: `${client_base_url}`,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  //allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
 };
 
 app.use(cors(corsOptions));
 app.use(cookieParser());
-//app.options('*', cors(corsOptions));
+app.options('*', cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Preflight CORS handler
-app.options('*', (req, res) => {
-  res.header('Access-Control-Allow-Origin', client_base_url);
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  res.header('Access-Control-Allow-Credentials', 'true');
-  res.status(200).json({ body: "OK" });
-});
 
-
-
-app.get("/status", async (req, res) => {
+app.get("/status", allowCors(async (req, res) => {
   res.send({ message: "status OK!" });
-});
+}));
 
 //auth route
-app.use('/api/auth', authRoutes);
+app.use('/api/auth', allowCors(authRoutes));
 
 //forward request to myUserRoute
-app.use("/api/my/user", myUserRoute);
+app.use("/api/my/user", allowCors(myUserRoute));
 
 //my restaurant route
-app.use("/api/my/restaurant", myRestaurantRoute);
+app.use("/api/my/restaurant", allowCors(myRestaurantRoute));
 
 //restaurant route
-app.use("/api/restaurant", restaurantRoute);
+app.use("/api/restaurant", allowCors(restaurantRoute));
 
 //order route
-app.use("/api/order", orderRoute);
+app.use("/api/order", allowCors(orderRoute));
 
 app.use(notFound);
 app.use(errorHandler);
