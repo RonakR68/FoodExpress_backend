@@ -11,7 +11,6 @@ import { v2 as cloudinary } from "cloudinary";
 import myRestaurantRoute from "./routes/MyRestaurantRoute.js";
 import restaurantRoute from "./routes/RestaurantRoute.js";
 import orderRoute from "./routes/OrderRoute.js";
-import allowCors from './utils/allowCors.js';
 
 const port = process.env.PORT || 7000;
 const client_base_url = process.env.CLIENT_BASE_URL;
@@ -41,24 +40,24 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 
-app.get("/status", allowCors(async (req, res) => {
+app.get("/status", async (req, res) => {
   res.send({ message: "status OK!" });
-}));
+});
 
 //auth route
-app.use('/api/auth', allowCors(authRoutes));
+app.use('/api/auth', authRoutes);
 
 //forward request to myUserRoute
-app.use("/api/my/user", allowCors(myUserRoute));
+app.use("/api/my/user", myUserRoute);
 
 //my restaurant route
-app.use("/api/my/restaurant", allowCors(myRestaurantRoute));
+app.use("/api/my/restaurant", myRestaurantRoute);
 
 //restaurant route
-app.use("/api/restaurant", allowCors(restaurantRoute));
+app.use("/api/restaurant", restaurantRoute);
 
 //order route
-app.use("/api/order", allowCors(orderRoute));
+app.use("/api/order", orderRoute);
 
 app.use(notFound);
 app.use(errorHandler);
