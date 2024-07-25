@@ -59,9 +59,14 @@ const searchRestaurant = async (req, res) => {
         const pageSize = Number(process.env.PAGINATION_LIMIT); //10 results per page
         const skip = (page - 1) * pageSize;
 
+        let sortOrder = 1; // Default to ascending
+        if (sortOption === "rating") {
+            sortOrder = -1; // Descending for rating
+        }
+
         // sortOption = "lastUpdated"
         const restaurants = await Restaurant.find(query)
-            .sort({ [sortOption]: 1 })
+            .sort({ [sortOption]: sortOrder })
             .skip(skip)
             .limit(pageSize)
             .lean(); //removes mongoose metadata
