@@ -1,5 +1,20 @@
 import mongoose from "mongoose";
 
+const reviewSchema = mongoose.Schema(
+  {
+    rating: { type: Number, required: true },
+    comment: { type: String, required: true },
+    user: {
+      type: mongoose.Schema.Types.ObjectId, // User who provided the review
+      required: true,
+      ref: 'User',
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
+
 const orderSchema = new mongoose.Schema({
   restaurant: { type: mongoose.Schema.Types.ObjectId, ref: "Restaurant" },
   user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
@@ -22,6 +37,7 @@ const orderSchema = new mongoose.Schema({
     type: String,
     enum: ["placed", "paid", "inProgress", "outForDelivery", "delivered"],
   },
+  reviews: [reviewSchema],
   createdAt: { type: Date, default: Date.now },
 });
 

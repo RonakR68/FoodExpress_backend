@@ -12,6 +12,6 @@ router.post(
 
 router.get("/", protect, OrderController.getMyOrders);
 
-
+router.post("/review", protect, OrderController.reviewOrder);
 
 export default router;
