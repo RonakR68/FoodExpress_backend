@@ -89,7 +89,27 @@ const searchRestaurant = async (req, res) => {
     }
 };
 
+const getTopRatedRestaurants = async (req, res) => {
+    try {
+        //console.log('get top restaurants');
+        //console.log(req);
+        const limit = parseInt(req.query.limit) || 3;
+
+        // Fetch the top-rated restaurants
+        const topRatedRestaurants = await Restaurant.find()
+            .sort({ rating: -1 }) 
+            .limit(limit)         
+            .lean();   // Convert to plain JS object
+
+        res.json(topRatedRestaurants);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "Something went wrong" });
+    }
+};
+
 export default {
     getRestaurant,
     searchRestaurant,
+    getTopRatedRestaurants,
 };
