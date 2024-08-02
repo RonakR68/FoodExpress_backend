@@ -84,8 +84,54 @@ export const getUser = async (req, res) => {
   }
 };
 
+
+// @desc    Google login or register user
+// @route   POST /api/auth/google
+// @access  Public
+const google = asyncHandler(async (req, res) => {
+  try {
+    const { email, name, photo } = req.body;
+
+    let user = await User.findOne({ email });
+
+    if (user) {
+      generateToken(res, user._id);
+      return res.json({
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+      });
+    } 
+
+    // If user does not exist, create a new user
+    const generatedPassword = Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8);
+    user = await User.create({
+      name: name.split(' ').join('').toLowerCase(),
+      email: email,
+      password: generatedPassword,
+      profilePicture: photo,
+    });
+
+    if (user) {
+      generateToken(res, user._id);
+      return res.status(201).json({
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+      });
+    } else {
+      res.status(400);
+      throw new Error('Invalid user data');
+    }
+  } catch (error) {
+    console.error('Google login error:', error);
+    res.status(500).json({ message: error.message || 'Internal Server Error' });
+  }
+});
+
 export {
   loginUser,
   registerUser,
   logoutUser,
+  google,
 };
