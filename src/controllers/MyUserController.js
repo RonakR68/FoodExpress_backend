@@ -2,6 +2,7 @@ import User from "../models/user.js";
 
 const getCurrentUser = async (req, res) => {
     try {
+        //console.log('get user: ' + req.user._id);
         const currentUser = await User.findById(req.user._id);
         if (!currentUser) {
             return res.status(404).json({ message: "User not found" });

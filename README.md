@@ -7,6 +7,7 @@ FoodExpress is a food ordering and restaurant management web application. The ba
 ## Features
 
 - User authentication with JWT stored in HTTP-only cookie
+- Option to use Google account for easy, fast and secure authentication
 - Restaurant management (CRUD operations for restaurants, menus, and orders)
 - Secure password storage with bcrypt
 - User profile management

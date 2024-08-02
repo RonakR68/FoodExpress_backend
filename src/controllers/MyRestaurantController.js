@@ -5,13 +5,13 @@ import Order from "../models/order.js";
 // Get restaurant details
 const getMyRestaurant = async (req, res) => {
     try {
-        //console.log('getMyRestaurant request');
-        //console.log(req.user);
+        //console.log('get my restaurant: ' + req.user._id);
         const restaurant = await Restaurant.findOne({ user: req.user._id });
         if (!restaurant) {
             //console.log("no restaurant");
             return res.status(404).json({ message: "No Restaurant found!" });
         }
+        //console.log(restaurant);
         res.json(restaurant);
     } catch (error) {
         console.log("error", error);
