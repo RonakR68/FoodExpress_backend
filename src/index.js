@@ -11,6 +11,8 @@ import { v2 as cloudinary } from "cloudinary";
 import myRestaurantRoute from "./routes/MyRestaurantRoute.js";
 import restaurantRoute from "./routes/RestaurantRoute.js";
 import orderRoute from "./routes/OrderRoute.js";
+import { Server } from 'socket.io';
+import http from 'http';
 
 const port = process.env.PORT || 7000;
 const client_base_url = process.env.CLIENT_BASE_URL;
@@ -26,6 +28,9 @@ cloudinary.config({
 });
 
 const app = express();
+const server = http.createServer(app); //create HTTP-server
+const io = new Server(server, { cors: { origin: client_base_url, methods: ["GET", "POST"], }, }); // Initialize Socket.IO with CORS options
+app.set('io', io);
 const corsOptions = {
   origin: `${client_base_url}`,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
@@ -62,6 +67,15 @@ app.use("/api/order", orderRoute);
 app.use(notFound);
 app.use(errorHandler);
 
-app.listen(port, () => {
+io.on('connection', (socket) => {
+  //console.log('New client connected');
+
+  socket.on('disconnect', () => {
+    //console.log('Client disconnected');
+  });
+});
+
+
+server.listen(port, () => {
   console.log(`server started on localhost: ${port}`);
 });

@@ -1,6 +1,7 @@
 import Restaurant from "../models/restaurant.js";
 import Order from "../models/order.js";
 import User from "../models/user.js";
+import { Server } from 'socket.io';
 
 const getMyOrders = async (req, res) => {
     try {
@@ -40,6 +41,10 @@ const createOrder = async (req, res) => {
         });
 
         await newOrder.save();
+        // Emit the new order to the relevant room
+        const io = req.app.get('io'); // Get the io instance from the express app
+        io.emit('orderUpdate', newOrder);
+        //console.log('Emitting orderUpdate event for new order:', newOrder);
         res.json({ message: "Order created successfully", order: newOrder });
     } catch (error) {
         console.log(error);
@@ -94,7 +99,7 @@ const reviewOrder = async (req, res) => {
         // Add the review to the order
         const review = {
             rating: Number(rating),
-            comment,
+            comment: comment || "",
             user: req.user._id
         };
         //console.log('Review: ' + review.rating + ' ' + review.comment + ' ' + review.user);
@@ -111,6 +116,10 @@ const reviewOrder = async (req, res) => {
 
         await restaurant.save();
 
+        // Emit the review update to the restaurant owner
+        const io = req.app.get('io'); // Get the io instance from the express app
+        io.emit('reviewUpdate', { orderId, review });
+        //console.log('Emitting reviewUpdate event for order:', orderId);
         res.json({ message: "Review added successfully", review });
     } catch (error) {
         console.error(error);

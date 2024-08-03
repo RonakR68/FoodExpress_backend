@@ -9,7 +9,7 @@ const menuItemSchema = new mongoose.Schema({
 const reviewSchema = new mongoose.Schema(
     {
         rating: { type: Number, required: true },
-        comment: { type: String, required: true },
+        comment: { type: String, required: false },
         user: {
             type: mongoose.Schema.Types.ObjectId,
             required: true,

@@ -1,6 +1,7 @@
 import Restaurant from "../models/restaurant.js";
 import cloudinary from "cloudinary";
 import Order from "../models/order.js";
+import { Server } from 'socket.io';
 
 // Get restaurant details
 const getMyRestaurant = async (req, res) => {
@@ -131,7 +132,11 @@ const updateOrderStatus = async (req, res) => {
 
         order.status = status;
         await order.save();
-
+        // Emit the status update to the relevant room
+        const io = req.app.get('io'); // Get the io instance from the express app
+        io.to(restaurant._id.toString()).emit('statusUpdate', order);
+        //console.log('Emitting statusUpdate event for order:', order);
+        io.emit('statusUpdate', order);
         res.status(200).json(order);
     } catch (error) {
         console.log(error);
