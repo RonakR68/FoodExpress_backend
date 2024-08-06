@@ -1,6 +1,37 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 
+const addressSchema = mongoose.Schema({
+    name: { type: String, default: '' },
+    addressLine1: {
+        type: String,
+        required: true,
+    },
+    addressLine2: {
+        type: String,
+    },
+    city: {
+        type: String,
+        required: true,
+    },
+    state: {
+        type: String,
+        required: true,
+    },
+    country: {
+        type: String,
+        required: false,
+    },
+    pincode: {
+        type: String,
+        required: true,
+    },
+    isDefault: {
+        type: Boolean,
+        default: false,
+    }
+});
+
 const userSchema = mongoose.Schema(
     {
         name: {
@@ -21,18 +52,7 @@ const userSchema = mongoose.Schema(
             default:
                 'https://img.freepik.com/premium-vector/man-avatar-profile-picture-vector-illustration_268834-538.jpg',
         },
-        addressLine1: {
-            type: String,
-        },
-        addressLine2: {
-            type: String,
-        },
-        city: {
-            type: String,
-        },
-        country: {
-            type: String,
-        },
+        addresses: {type: [addressSchema], default: []}
     },
     {
         timestamps: true,

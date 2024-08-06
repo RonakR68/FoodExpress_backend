@@ -36,19 +36,22 @@ const createCurrentUser = async (req, res) => {
 
 const updateCurrentUser = async (req, res) => {
     try {
-        const { email, name, addressLine1, addressLine2, country, city } = req.body;
+        const { email, name, addresses } = req.body;
+        //console.log(addresses);
         const user = await User.findById(req.user._id);
 
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
 
+        if (!addresses || addresses.length === 0) {
+            return res.status(400).json({ message: "At least one address is required" });
+        }
+
         user.email = email || user.email;
         user.name = name || user.name;
-        user.addressLine1 = addressLine1 || user.addressLine1;
-        user.addressLine2 = addressLine2 || user.addressLine2;
-        user.city = city || user.city;
-        user.country = country || user.country;
+        user.addresses = addresses;
+        //console.log('address: ' + addresses[0].name);
 
         await user.save();
 
@@ -58,6 +61,7 @@ const updateCurrentUser = async (req, res) => {
         res.status(500).json({ message: "Error while updating user profile" });
     }
 };
+
 
 export default {
     getCurrentUser,
