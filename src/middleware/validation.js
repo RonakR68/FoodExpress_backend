@@ -30,6 +30,10 @@ export const validateMyUserRequest = [
 
 export const validateMyRestaurantRequest = [
   body("restaurantName").notEmpty().withMessage("Restaurant name is required"),
+  body("addressLine1").notEmpty().withMessage("Address Line 1 is required"),
+  body("state").notEmpty().withMessage("State is required"),
+  body("pincode").isLength({ min: 6, max: 6 })
+  .withMessage("Pincode must be exactly 6 digits"),
   body("city").notEmpty().withMessage("City is required"),
   body("deliveryPrice")
     .isFloat({ min: 0 })

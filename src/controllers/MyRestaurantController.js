@@ -65,7 +65,10 @@ const updateMyRestaurant = async (req, res) => {
         }
 
         restaurant.restaurantName = req.body.restaurantName;
+        restaurant.addressLine1 = req.body.addressLine1;
         restaurant.city = req.body.city;
+        restaurant.state = req.body.state;
+        restaurant.pincode = req.body.pincode;
         //restaurant.country = req.body.country;
         restaurant.deliveryPrice = req.body.deliveryPrice;
         restaurant.estimatedDeliveryTime = req.body.estimatedDeliveryTime;
