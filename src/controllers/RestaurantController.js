@@ -18,7 +18,7 @@ const getRestaurant = async (req, res) => {
 
 const searchRestaurant = async (req, res) => {
     try {
-        const city = req.params.city;
+        const cityOrPincode = req.params.city;
 
         const searchQuery = (req.query.searchQuery) || "";
         const selectedCuisines = (req.query.selectedCuisines) || "";
@@ -27,7 +27,13 @@ const searchRestaurant = async (req, res) => {
 
         let query = {};
 
-        query["city"] = new RegExp(city, "i"); //ignore case
+        // Check if the cityOrPincode is a 6-digit pincode or a city name
+        if (/^\d{6}$/.test(cityOrPincode)) {
+            query["pincode"] = cityOrPincode;
+        } else {
+            query["city"] = new RegExp(cityOrPincode, "i"); // ignore case
+        }
+
         const cityCheck = await Restaurant.countDocuments(query);
         if (cityCheck === 0) {
             return res.status(404).json({
