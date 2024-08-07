@@ -1,4 +1,5 @@
 import Restaurant from "../models/restaurant.js";
+import User from "../models/user.js";
 
 const getRestaurant = async (req, res) => {
     try {
@@ -100,20 +101,38 @@ const getTopRatedRestaurants = async (req, res) => {
     try {
         //console.log('get top restaurants');
         //console.log(req);
-        const limit = parseInt(req.query.limit) || 3;
+        const limit = parseInt(req.query.limit) || 5;
+        let query = {};
+        const userId = req.headers["user-id"];
 
+        if (userId) {
+            const user = await User.findById(userId).lean();
+            if (user && user.addresses && user.addresses.length > 0) {
+                const defaultAddress = user.addresses.find(address => address.isDefault);
+                if (defaultAddress) {
+                    if (defaultAddress.pincode) {
+                        query["pincode"] = defaultAddress.pincode;
+                    } else if (defaultAddress.city) {
+                        query["city"] = new RegExp(defaultAddress.city, "i");
+                    }
+                }
+            }
+        }
+        //console.log('query: '+ query);
+        //console.log(query);
         // Fetch the top-rated restaurants
-        const topRatedRestaurants = await Restaurant.find()
-            .sort({ rating: -1 }) 
-            .limit(limit)         
+        const topRatedRestaurants = await Restaurant.find(query)
+            .sort({ rating: -1 })
+            .limit(limit)
             .lean();   // Convert to plain JS object
-
+        //console.log(topRatedRestaurants);
         res.json(topRatedRestaurants);
     } catch (error) {
         console.log(error);
         res.status(500).json({ message: "Something went wrong" });
     }
 };
+
 
 export default {
     getRestaurant,
