@@ -1,14 +1,35 @@
 import Restaurant from "../models/restaurant.js";
 import Order from "../models/order.js";
 import User from "../models/user.js";
-import { Server } from 'socket.io';
 
 const getMyOrders = async (req, res) => {
     try {
+        //console.log('get my orders');
         //console.log(req.user);
-        const orders = await Order.find({ user: req.user._id })
+        const { sort = 'latest', status } = req.query;
+        const filter = { user: req.user._id };
+        
+        // Add status filter if specified
+        if (status) {
+            if (status === 'pending') {
+                filter.status = { $ne: 'delivered' };
+            } else if (status === 'delivered') {
+                filter.status = 'delivered';
+            }
+        }
+
+        // Set sorting criteria
+        let sortCriteria;
+        if (sort === 'rating') {
+            sortCriteria = { 'reviews.rating': -1 }; // Sort by rating descending
+        } else {
+            sortCriteria = { createdAt: -1 }; // Sort by date descending (latest first)
+        }
+
+        const orders = await Order.find(filter)
             .populate("restaurant")
-            .populate("user");
+            .populate("user")
+            .sort(sortCriteria);
         //console.log(orders);
         res.json(orders);
     } catch (error) {

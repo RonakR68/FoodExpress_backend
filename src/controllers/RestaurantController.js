@@ -18,6 +18,7 @@ const getRestaurant = async (req, res) => {
 
 const searchRestaurant = async (req, res) => {
     try {
+        //console.log('search restaurants');
         const cityOrPincode = req.params.city;
 
         const searchQuery = (req.query.searchQuery) || "";
