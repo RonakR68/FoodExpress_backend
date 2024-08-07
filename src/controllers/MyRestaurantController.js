@@ -93,17 +93,35 @@ const getMyRestaurantOrders = async (req, res) => {
     try {
         //console.log("get my restaurant order");
         //console.log(req.user._id);
+        const { sort = 'latest', status = '' } = req.query;
         const restaurant = await Restaurant.findOne({ user: req.user._id });
         if (!restaurant) {
             //console.log("get order: no restaurant found");
             return res.status(404).json({ message: "restaurant not found" });
         }
 
-        const orders = await Order.find({ restaurant: restaurant._id })
+        let query = { restaurant: restaurant._id };
+        if (status) {
+            query.status = status === 'pending' ? { $ne: 'delivered' } : status;
+        }
+
+        let ordersQuery = Order.find(query)
             .populate("restaurant")
             .populate("user");
 
-        res.json(orders);
+        if (sort === 'latest') {
+            ordersQuery = ordersQuery.sort({ createdAt: -1 });
+        } 
+        else if (sort === 'rating') {
+            ordersQuery = ordersQuery.sort({ 'reviews.rating': -1 });
+        } 
+        else if (sort === 'totalCost') {
+            ordersQuery = ordersQuery.sort({ totalAmount: -1 });
+        }
+
+        const result = await ordersQuery;
+
+        res.json(result);
     } catch (error) {
         console.log(error);
         res.status(500).json({ message: "something went wrong" });
