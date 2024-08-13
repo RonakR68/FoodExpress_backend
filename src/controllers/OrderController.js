@@ -93,11 +93,11 @@ const calculateTotalAmount = (cartItems, menuItems, deliveryPrice) => {
 
 const reviewOrder = async (req, res) => {
     const { orderId, rating, comment, itemReviews } = req.body;
-    console.log('order review');
-    console.log(orderId);
-    console.log(rating);
-    console.log(comment);
-    console.log(itemReviews)
+    // console.log('order review');
+    // console.log(orderId);
+    // console.log(rating);
+    // console.log(comment);
+    // console.log(itemReviews)
     try {
         // Find the order by ID
         const order = await Order.findById(orderId).populate("restaurant").populate("user");
@@ -140,7 +140,7 @@ const reviewOrder = async (req, res) => {
         // Update item-specific ratings if provided
         if (itemReviews && itemReviews.length > 0) {
             for (const itemReview of itemReviews) {
-                console.log('item review id: '+ itemReview.menuItemId)
+                //console.log('item review id: '+ itemReview.menuItemId)
                 const menuItem = restaurant.menuItems.find(item => item._id.toString() === itemReview.menuItemId.toString());
                 if (menuItem) {
                     const totalItemRating = menuItem.itemRating * menuItem.numberOfRatings + itemReview.rating;

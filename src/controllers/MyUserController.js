@@ -1,4 +1,8 @@
 import User from "../models/user.js";
+import axios from 'axios';
+import Order from '../models/order.js';
+import Restaurant from '../models/restaurant.js';
+import jwt from 'jsonwebtoken';
 
 const getCurrentUser = async (req, res) => {
     try {
@@ -62,9 +66,72 @@ const updateCurrentUser = async (req, res) => {
     }
 };
 
+const getRecommendations = async (req, res) => {
+    const { userId, pincode } = req.body;
+
+    try {
+        // Fetch restaurants in the same pincode
+        const restaurants = await Restaurant.find({ pincode });
+
+        if (!restaurants.length) {
+            return res.status(404).json({ message: 'No restaurants found for this pincode.' });
+        }
+
+        const restaurantIds = restaurants.map(r => r._id);
+
+        // Fetch orders from these restaurants
+        const orders = await Order.find({
+            restaurant: { $in: restaurantIds },
+            'reviews.rating': { $exists: true } // Ensure the order has been rated
+        }).populate('user restaurant reviews.user');
+
+        if (!orders.length) {
+            return res.status(404).json({ message: 'No rated orders found.' });
+        }
+
+        // Extract relevant data for collaborative filtering
+        const data = orders.map(order => ({
+            userId: order.user._id.toString(),
+            restaurantId: order.restaurant._id.toString(),
+            restaurantRating: order.reviews[0].rating,
+            itemReviews: order.reviews[0].itemReviews.map(item => ({
+                menuItemId: item.menuItemId.toString(),
+                itemRating: item.rating
+            }))
+        }));
+
+        // Call the Python service to get recommendations
+        console.log('userId: ' + userId);
+        console.log('data')
+        //console.log(data);
+        const recommendations = await getRecommendationsAPI(userId, data);
+
+        // Send recommendations to frontend
+        res.json(recommendations);
+    } catch (error) {
+        //console.error(error);
+        res.status(500).json({ message: 'Server error' });
+    }
+};
+
+// Function to call the Python API for recommendations
+async function getRecommendationsAPI(token, data) {
+    try {
+        // Decode the token to extract the userId
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const userId = decoded.userId;
+
+        const response = await axios.post('http://localhost:5001/recommend', { userId, data });
+        return response.data;
+    } catch (error) {
+        console.error('Error calling Python service:', error);
+        throw error;
+    }
+}
 
 export default {
     getCurrentUser,
     createCurrentUser,
     updateCurrentUser,
+    getRecommendations
 };

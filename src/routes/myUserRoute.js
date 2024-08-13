@@ -17,4 +17,6 @@ router.post("/", protect, MyUserController.createCurrentUser);
 // Update current user
 router.put("/", protect, validateMyUserRequest, MyUserController.updateCurrentUser);
 
+router.post('/recommendations', protect, MyUserController.getRecommendations);
+
 export default router;

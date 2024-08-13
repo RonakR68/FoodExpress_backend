@@ -55,6 +55,7 @@ const createMyRestaurant = async (req, res) => {
 
 // Update restaurant details
 const updateMyRestaurant = async (req, res) => {
+    //console.log('update rest')
     try {
         const restaurant = await Restaurant.findOne({
             user: req.user._id,
@@ -63,7 +64,7 @@ const updateMyRestaurant = async (req, res) => {
         if (!restaurant) {
             return res.status(404).json({ message: "No Restaurant found!" });
         }
-
+        //console.log(req.body);
         restaurant.restaurantName = req.body.restaurantName;
         restaurant.addressLine1 = req.body.addressLine1;
         restaurant.city = req.body.city;
