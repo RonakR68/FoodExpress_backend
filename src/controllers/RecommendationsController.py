@@ -17,10 +17,10 @@ def recommend():
 
     df = pd.DataFrame(data)
     
-    # Step 1: Aggregate Multiple Ratings
+    # Aggregate Multiple Ratings
     df_aggregated = df.groupby(['userId', 'restaurantId']).agg({'restaurantRating': 'mean'}).reset_index()
     
-    # Step 2: Pivot to create a matrix of users and their aggregated ratings
+    # Pivot to create a matrix of users and their aggregated ratings
     item_matrix = df_aggregated.pivot_table(index='userId', columns='restaurantId', values='restaurantRating').fillna(0)
     print("Item Matrix after aggregation:\n", item_matrix)
 

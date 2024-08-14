@@ -68,7 +68,9 @@ const updateCurrentUser = async (req, res) => {
 
 const getRecommendations = async (req, res) => {
     const { userId, pincode } = req.body;
-
+    // console.log('get Recommendations');
+    // console.log(userId);
+    // console.log(pincode);
     try {
         // Fetch restaurants in the same pincode
         const restaurants = await Restaurant.find({ pincode });
@@ -101,13 +103,28 @@ const getRecommendations = async (req, res) => {
         }));
 
         // Call the Python service to get recommendations
-        console.log('userId: ' + userId);
-        console.log('data')
+        //console.log('userId: ' + userId);
+        //console.log('data')
         //console.log(data);
-        const recommendations = await getRecommendationsAPI(userId, data);
+        
+        const recommendedRestaurantIds = await getRecommendationsAPI(userId, data);
+        //console.log(recommendedRestaurantIds)
+
+        let recommendedRestaurants = await Restaurant.find({ _id: { $in: recommendedRestaurantIds } });
+        if (!recommendedRestaurants.length) {
+            return res.status(404).json({ message: 'No recommended restaurants found.' });
+        }
+
+        recommendedRestaurants = recommendedRestaurants.filter(restaurant => {
+            return restaurant.user.toString() !== userId;
+        });
+
+        if (!recommendedRestaurants.length) {
+            return res.status(404).json({ message: 'No recommended restaurants found.' });
+        }
 
         // Send recommendations to frontend
-        res.json(recommendations);
+        res.json(recommendedRestaurants);
     } catch (error) {
         //console.error(error);
         res.status(500).json({ message: 'Server error' });
@@ -117,11 +134,12 @@ const getRecommendations = async (req, res) => {
 // Function to call the Python API for recommendations
 async function getRecommendationsAPI(token, data) {
     try {
-        // Decode the token to extract the userId
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        const userId = decoded.userId;
-
-        const response = await axios.post('http://localhost:5001/recommend', { userId, data });
+        // // Decode the token to extract the userId
+        // const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        // const userId = decoded.userId;
+        // console.log('decoded userid: '+ userId)
+        const userId = token
+        const response = await axios.post(`${process.env.RECOMMENDATION_API_URL}`, { userId, data });
         return response.data;
     } catch (error) {
         console.error('Error calling Python service:', error);
