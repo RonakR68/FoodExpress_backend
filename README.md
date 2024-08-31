@@ -38,7 +38,7 @@ FoodExpress is a food ordering and restaurant management web application. The ba
 
 ### Prerequisites
 
-- Node.js and npm installed on your machine
+- Node.js, npm and python installed on your machine
 - MongoDB instance (local or cloud-based)
 - Cloudinary account for image uploads
 
