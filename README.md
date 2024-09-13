@@ -6,17 +6,19 @@ This is backend repository for FoodExpress app. You can find Frontend repository
 
 FoodExpress is a food ordering and restaurant management web application. The backend is built using Node.js, Express, and MongoDB. It provides RESTful APIs for managing user authentication, restaurant data, menu items, and orders. It uses Python Flask and sci-kit learn for restaurant recommendation system based on user collaborative filtering. The backend also integrates with external services like Cloudinary for image uploads.
 
+[Live Webiste Link](https://foodexpress-frontend-g6dx.onrender.com/)
+
 ## Features
 
-- **User Authentication**: Custom JWT authentication stored in HTTP-only cookies, with an option for Google account integration for fast and secure login.
-- **Restaurant Management**: Manage restaurant details, menus, and orders (CRUD).
+- **User Authentication**: User authentication using JWT stored in HTTP-only cookie. Users can also use Google account for fast and secure login.
+- **Restaurant Management**: Add and manage restaurant details, menu items and orders.
 - **Secure Password Storage**: Passwords are hashed using bcrypt for security.
-- **User Profile Management**: Users can manage their profiles and update their information.
+- **User Profile Management**: Users can manage their profile details and can manage addresses.
+- **Restaurant Browsing and Search**: Users can browse and search for available restaurants and their menu items.
+- **Order Placement and Tracking**: Users can place and track their active orders status and can also view past orders details.
+- **Ratings and Reviews**: Users can provide ratings and reviews for restaurants and food items.
+- **Restaurant Recommendation System**: Collaborative-based recommendation system to suggest restaurants based on similar user preferences.
 - **Responsive Design**: Modern UI with responsive design to ensure a seamless experience for users.
-- **Restaurant Browsing and Search**: Users can browse and search for restaurants and menu items.
-- **Order Placement and Tracking**: Users can place and track their orders.
-- **Ratings and Reviews**: Users can provide ratings and reviews for restaurant orders.
-- **Restaurant Recommendation System**: Collaborative-based recommendation system to suggest restaurants based on user preferences.
 - **Image Upload and Management**: Restaurant image uploads are managed through Cloudinary.
 - **Data Validation and Error Handling**: Validation and error handling across the application.
 - **Dark Mode Support**: Option for users to switch to dark mode for a better viewing experience.
@@ -67,5 +69,5 @@ FoodExpress is a food ordering and restaurant management web application. The ba
 
 6. Navigate to src/controllers directory and start the python flask recommendation service
    ``` cd ./src/controllers
-       python3 RecommendationsController.py
+   python3 RecommendationsController.py
 
