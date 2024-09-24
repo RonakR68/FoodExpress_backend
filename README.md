@@ -4,15 +4,15 @@
 
 This is backend repository for FoodExpress app. You can find Frontend repository [here](https://github.com/RonakR68/FoodExpress_frontend).
 
-FoodExpress is a food ordering and restaurant management web application. The backend is built using Node.js, Express, and MongoDB. It provides RESTful APIs for managing user authentication, restaurant data, menu items, and orders. It uses Python Flask and sci-kit learn for restaurant recommendation system based on user collaborative filtering. The backend also integrates with external services like Cloudinary for image uploads.
+Food Express is a food ordering and restaurant management web application. The backend is built using Node.js, Express, and MongoDB. It provides RESTful APIs for managing user authentication, restaurant data, menu items, and orders. It uses Python Flask and sci-kit learn for restaurant recommendation system based on user collaborative filtering. The backend also integrates with external services like Cloudinary for image uploads.
 
 [Live Webiste Link](https://foodexpress-frontend-g6dx.onrender.com/)
 
 ## Features
 
 - **User Authentication**: User authentication using JWT stored in HTTP-only cookie. Users can also use Google account for fast and secure login.
-- **Restaurant Management**: Add and manage restaurant details, menu items and orders.
 - **Secure Password Storage**: Passwords are hashed using bcrypt for security.
+- **Restaurant Management**: Add and manage restaurant details, menu items and orders.
 - **User Profile Management**: Users can manage their profile details and can manage addresses.
 - **Restaurant Browsing and Search**: Users can browse and search for available restaurants and their menu items.
 - **Order Placement and Tracking**: Users can place and track their active orders status and can also view past orders details.
@@ -36,7 +36,7 @@ FoodExpress is a food ordering and restaurant management web application. The ba
 - **Python Flask**
 - **sci-kit learn**
 
-## Getting Started
+## How To Run On Local Machine
 
 ### Prerequisites
 
