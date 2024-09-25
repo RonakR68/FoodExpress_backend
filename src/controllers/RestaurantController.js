@@ -97,6 +97,41 @@ const searchRestaurant = async (req, res) => {
     }
 };
 
+export const cuisineOnlySearch = async (req, res) => {
+    try {
+        const selectedCuisines = req.query.selectedCuisines || "";
+        const pincode = req.query.pincode || "";  // Get pincode from query
+        let query = {};
+
+        if (selectedCuisines) {
+            const cuisinesArray = selectedCuisines.split(",").map((cuisine) => new RegExp(cuisine, "i"));
+            query["cuisines"] = { $all: cuisinesArray };
+        }
+
+        if (pincode) {
+            query["pincode"] = pincode;  // Add pincode to the query if it's provided
+        }
+
+        const restaurants = await Restaurant.find(query).lean();
+
+        const response = {
+            data: restaurants,
+            pagination: {
+                total: restaurants.length,
+                page: 1,
+                pages: 1,
+            },
+        };
+
+        res.json(response);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "Something went wrong" });
+    }
+};
+
+
+
 const getTopRatedRestaurants = async (req, res) => {
     try {
         //console.log('get top restaurants');
@@ -138,4 +173,5 @@ export default {
     getRestaurant,
     searchRestaurant,
     getTopRatedRestaurants,
+    cuisineOnlySearch,
 };
