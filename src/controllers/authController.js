@@ -129,9 +129,36 @@ const google = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc    Guest login & get token
+// @route   POST /api/auth/guest-login
+// @access  Public
+const guestLoginUser = asyncHandler(async (req, res) => {
+  try {
+    // Find the guest user in the database
+    const guestEmail = process.env.GUEST_EMAIL || 'guest@email.com';
+    const guestUser = await User.findOne({ email: guestEmail });
+
+    if (!guestUser) {
+      return res.status(404).json({ message: 'Guest account not found' });
+    }
+
+    // Generate a JWT token for the guest user
+    generateToken(res, guestUser._id);
+
+    res.json({
+      _id: guestUser._id,
+      name: guestUser.name,
+      email: guestUser.email,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 export {
   loginUser,
   registerUser,
   logoutUser,
   google,
+  guestLoginUser,
 };
